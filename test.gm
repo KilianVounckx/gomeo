@@ -1,0 +1,23 @@
+# This is a fizz buzz function in my own language
+
+var FizzBuzz = function(n) do
+	for i from 1 to n+1 do
+		var words = []
+		if i % 3 == 0 do
+			var words = words + "Fizz"
+		end
+		if i % 5 == 0 do
+			var words = words + "Buzz"
+		end
+
+		if len(words) == 0 do
+			println(i)
+		else do
+			for i from 0 to len(words) do
+				print(words/i)
+			end
+			println("!")
+		end
+	end
+	return
+end

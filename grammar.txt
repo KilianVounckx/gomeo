@@ -1,0 +1,60 @@
+statements				: NEWLINE* statement (NEWLINE+ statement)* NEWLINE*
+
+statement				: KEYWORD:return expression?
+						: KEYWORD:continue
+						: KEYWORD:break
+						: expression
+
+expression				: KEYWORD:var IDENTIFIER EQ expression
+						: comparison-expression ((AND|OR) comparison-expression)*
+
+comparison-expression	: NOT comparison-expression
+						: arithmetic-expression ((EE|NE|LT|GT|LE|GE) arithmetic-expression)*
+
+arithmetic-expression	: term ((PLUS|MINUS) term)*
+
+term					: factor ((MUL|DIV|POW) factor)*
+
+factor					: (PLUS|MINUS) factor
+						: power
+
+power					: call (POW factor)*
+
+call					: atom (LPAREN (expression (COMMA expression)*)? RPAREN)?
+
+atom					: NUMBER|STRING|IDENTIFIER
+						: LPAREN expression RPAREN
+						: if-expression
+						: list-expression
+						: for-expression
+						: while-expression
+						: function-definition
+
+if-expression			: KEYWORD:if expression KEYWORD:do
+						  (statement (elseif-expression|else-expression KEYWORD:end)
+						  | (NEWLINE statements KEYWORD:end|elseif-expression|else-expression)
+
+elseif-expression		: KEYWORD:elseif expression KEYWORD:do
+						  (statement elseif-expression?|else-expression? KEYWORD:end)
+						  | (NEWLINE statements KEYWORD:end|elseif-expression|else-expression)
+
+else-expression			: KEYWORD:else
+						  (statement | (NEWLINE statements))
+						  KEYWORD:end
+
+list-expression			: LBRACKET (expression (COMMA expression)*)? RBRACKET
+
+for-expression			: KEYWORD:for IDENTIFIER KEYWORD:from expression KEYWORD:to expression
+						  (KEYWORD:step expression)? KEYWORD:do
+						  (statement | (NEWLINE statements))
+						  KEYWORD:end
+
+while-expression		: KEYWORD:while expression KEYWORD:do
+						  (statement | (NEWLINE statements))
+						  KEYWORD:end
+
+function-definition		: KEYWORD:function
+						  LPAREN (IDENTIFIER (COMMA IDENTIFIER)*)? RPAREN
+						  KEYWORD:do
+						  (expression | NEWLINE statements)
+						  KEYWORD:end
